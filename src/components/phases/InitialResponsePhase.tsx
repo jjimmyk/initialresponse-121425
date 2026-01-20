@@ -110,7 +110,7 @@ export function InitialResponsePhase({ data = {}, onDataChange, onComplete, onPr
             <div className="px-6 pb-4">
               <div className="border rounded-lg overflow-hidden bg-muted/20">
                 <iframe
-                  src="https://www.arcgis.com/apps/mapviewer/index.html?webmap=6ace7e7112ba42c493a9ccfeed86b0ec"
+                  src="https://www.arcgis.com/apps/mapviewer/index.html?webmap=4cff146c11d747f994717381ef8594cc"
                   width="100%"
                   height="500"
                   frameBorder="0"

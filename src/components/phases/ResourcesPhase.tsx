@@ -89,6 +89,7 @@ export function ResourcesPhase({ data, onDataChange, onComplete, onPrevious }: R
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [editingResourceId, setEditingResourceId] = useState<string | null>(null);
   const [expandedResources, setExpandedResources] = useState<Set<string>>(new Set());
+  const [viewMode, setViewMode] = useState<'resources' | 'requests'>('resources');
   
   // Form state for resource (add or edit)
   const [formData, setFormData] = useState({
@@ -260,9 +261,29 @@ export function ResourcesPhase({ data, onDataChange, onComplete, onPrevious }: R
         <div className="flex items-center justify-between px-[13px] py-3 w-full border-b-2 border-border rounded-t-lg rounded-b-none">
           {/* Title and Search */}
           <div className="flex items-center gap-4">
-            <p className="caption text-nowrap text-white whitespace-pre">
-              Resources
-            </p>
+            {/* Resources/Resource Requests Toggle */}
+            <div className="flex items-center rounded-[4px] border border-border overflow-hidden">
+              <button
+                onClick={() => setViewMode('resources')}
+                className={`h-[22.75px] px-3 caption transition-colors ${
+                  viewMode === 'resources'
+                    ? 'bg-accent text-accent-foreground'
+                    : 'bg-transparent text-card-foreground hover:bg-muted'
+                }`}
+              >
+                Resources
+              </button>
+              <button
+                onClick={() => setViewMode('requests')}
+                className={`h-[22.75px] px-3 caption transition-colors ${
+                  viewMode === 'requests'
+                    ? 'bg-accent text-accent-foreground'
+                    : 'bg-transparent text-card-foreground hover:bg-muted'
+                }`}
+              >
+                Resource Requests
+              </button>
+            </div>
             
             {/* Search Input */}
             <div className="relative h-[26px] w-[195px]">
@@ -283,30 +304,31 @@ export function ResourcesPhase({ data, onDataChange, onComplete, onPrevious }: R
               </div>
             </div>
           </div>
-
-          {/* Add Resource Button */}
-          <button
-            onClick={openAddResourceSheet}
-            className="bg-[#01669f] h-[22.75px] rounded-[4px] w-[130.625px] hover:bg-[#01669f]/90 transition-colors flex items-center justify-center relative"
-          >
-            <div className="absolute left-[16px] size-[13px]">
-              <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 13 13">
-                <g>
-                  <path d="M2.70833 6.5H10.2917" stroke="white" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.08333" />
-                  <path d="M6.5 2.70833V10.2917" stroke="white" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.08333" />
-                </g>
-              </svg>
-            </div>
-            <p className="caption text-nowrap text-white ml-[21px]">
-              Add Resource
-            </p>
-          </button>
         </div>
       </div>
 
+      {/* Add Resource Button - Below Header */}
+      <button
+        onClick={openAddResourceSheet}
+        className="bg-[#01669f] h-[22.75px] rounded-[4px] w-[130.625px] hover:bg-[#01669f]/90 transition-colors flex items-center justify-center relative"
+      >
+        <div className="absolute left-[16px] size-[13px]">
+          <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 13 13">
+            <g>
+              <path d="M2.70833 6.5H10.2917" stroke="white" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.08333" />
+              <path d="M6.5 2.70833V10.2917" stroke="white" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.08333" />
+            </g>
+          </svg>
+        </div>
+        <p className="caption text-nowrap text-white ml-[21px]">
+          Add Resource
+        </p>
+      </button>
+
       {/* Resources List */}
-      <div className="space-y-4">
-        {filteredResources.map((resource) => (
+      {viewMode === 'resources' && (
+        <div className="space-y-4">
+          {filteredResources.map((resource) => (
           <div
             key={resource.id}
             className="border border-border rounded-lg overflow-hidden"
@@ -461,7 +483,17 @@ export function ResourcesPhase({ data, onDataChange, onComplete, onPrevious }: R
             )}
           </div>
         ))}
-      </div>
+        </div>
+      )}
+
+      {/* Resource Requests View */}
+      {viewMode === 'requests' && (
+        <div className="space-y-4">
+          <div className="text-center py-12">
+            <p className="text-white text-lg">Resource Requests view coming soon...</p>
+          </div>
+        </div>
+      )}
 
       {/* Add/Edit Resource Side Panel */}
       <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>

@@ -5,6 +5,7 @@ import { Textarea } from '../ui/textarea';
 import { Label } from '../ui/label';
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { Checkbox } from '../ui/checkbox';
+import { Switch } from '../ui/switch';
 import { Plus, Search, ChevronDown, X, Check, ArrowUpDown, Pencil, Trash2 } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
@@ -172,7 +173,13 @@ function MultiSelectDropdown({
 }
 
 export function SafetyAnalysisPhase({ data, onDataChange, onComplete, onPrevious }: SafetyAnalysisPhaseProps) {
+  const [viewMode, setViewMode] = useState<'ics-201' | 'ics-208'>('ics-201');
   const [safetyOfficer, setSafetyOfficer] = useState(data.safetyOfficer || '');
+  const [safetyMessage, setSafetyMessage] = useState(data.safetyMessage || '');
+  const [safetyMessageSop, setSafetyMessageSop] = useState(data.safetyMessageSop || '');
+  const [safetyMessageComments, setSafetyMessageComments] = useState(data.safetyMessageComments || '');
+  const [hasHealthSafetyPlan, setHasHealthSafetyPlan] = useState<boolean>(data.hasHealthSafetyPlan ?? false);
+  const [healthSafetyPlanLocation, setHealthSafetyPlanLocation] = useState(data.healthSafetyPlanLocation || '');
   const [physicalHazards, setPhysicalHazards] = useState<string[]>(data.physicalHazards || []);
   const [environmentalHazards, setEnvironmentalHazards] = useState<string[]>(data.environmentalHazards || []);
   const [otherHazards, setOtherHazards] = useState<string[]>(data.otherHazards || []);
@@ -349,7 +356,25 @@ export function SafetyAnalysisPhase({ data, onDataChange, onComplete, onPrevious
 
   return (
     <div className="space-y-6">
-      <Card>
+      {/* Toggle Controls */}
+      <div className="flex items-center gap-2">
+        <button
+          onClick={() => setViewMode('ics-201')}
+          className={`h-[22.75px] rounded-[4px] px-3 transition-colors caption ${viewMode === 'ics-201' ? 'bg-accent text-accent-foreground' : 'border border-border hover:bg-[rgba(255,255,255,0.1)] text-white'}`}
+        >
+          Safety Analysis
+        </button>
+        <button
+          onClick={() => setViewMode('ics-208')}
+          className={`h-[22.75px] rounded-[4px] px-3 transition-colors caption ${viewMode === 'ics-208' ? 'bg-accent text-accent-foreground' : 'border border-border hover:bg-[rgba(255,255,255,0.1)] text-white'}`}
+        >
+          Safety Message
+        </button>
+      </div>
+
+      {/* ICS-201 Safety Analysis Content */}
+      {viewMode === 'ics-201' && (
+      <Card style={{ background: 'linear-gradient(90deg, rgba(2, 163, 254, 0.08) 0%, rgba(0, 0, 0, 0) 100%), linear-gradient(90deg, rgb(20, 23, 26) 0%, rgb(20, 23, 26) 100%)' }}>
         <CardContent className="py-6">
           <div className="space-y-6">
             {/* Safety Officer */}
@@ -896,6 +921,78 @@ export function SafetyAnalysisPhase({ data, onDataChange, onComplete, onPrevious
           </div>
         </CardContent>
       </Card>
+      )}
+
+      {/* ICS-208 Safety Message Content */}
+      {viewMode === 'ics-208' && (
+        <Card style={{ background: 'linear-gradient(90deg, rgba(2, 163, 254, 0.08) 0%, rgba(0, 0, 0, 0) 100%), linear-gradient(90deg, rgb(20, 23, 26) 0%, rgb(20, 23, 26) 100%)' }}>
+          <CardContent className="py-6">
+            <div className="space-y-6">
+              {/* Safety Message */}
+              <div>
+                <Label htmlFor="safety-message">Safety Message</Label>
+                <Textarea
+                  id="safety-message"
+                  value={safetyMessage}
+                  onChange={(e) => setSafetyMessage(e.target.value)}
+                  placeholder="Enter safety message..."
+                  className="mt-2 bg-input-background border-border min-h-[120px]"
+                />
+              </div>
+
+              {/* Standard Operating Procedures */}
+              <div>
+                <Label htmlFor="safety-message-sop">Standard Operating Procedures (SOP) and Safe Work Practices</Label>
+                <Textarea
+                  id="safety-message-sop"
+                  value={safetyMessageSop}
+                  onChange={(e) => setSafetyMessageSop(e.target.value)}
+                  placeholder="Enter a description..."
+                  className="mt-2 bg-input-background border-border min-h-[120px]"
+                />
+              </div>
+
+              {/* Comments */}
+              <div>
+                <Label htmlFor="safety-message-comments">Comments</Label>
+                <Textarea
+                  id="safety-message-comments"
+                  value={safetyMessageComments}
+                  onChange={(e) => setSafetyMessageComments(e.target.value)}
+                  placeholder="Enter comments..."
+                  className="mt-2 bg-input-background border-border min-h-[120px]"
+                />
+              </div>
+
+              {/* Health & Safety Plan */}
+              <div>
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="health-safety-plan-checkbox">Incident Has Health & Safety Plan</Label>
+                  <Checkbox
+                    id="health-safety-plan-checkbox"
+                    checked={hasHealthSafetyPlan}
+                    onCheckedChange={(checked) => setHasHealthSafetyPlan(checked === true)}
+                  />
+                </div>
+
+                {/* Health & Safety Plan Location - only show if checkbox is checked */}
+                {hasHealthSafetyPlan && (
+                  <div className="mt-4">
+                    <Label htmlFor="health-safety-plan-location">Health & Safety Plan Location</Label>
+                    <Input
+                      id="health-safety-plan-location"
+                      value={healthSafetyPlanLocation}
+                      onChange={(e) => setHealthSafetyPlanLocation(e.target.value)}
+                      placeholder="Enter location..."
+                      className="mt-2 bg-input-background border-border"
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }

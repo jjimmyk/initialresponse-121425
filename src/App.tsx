@@ -9,6 +9,8 @@ import { IncidentRosterPhase } from './components/phases/IncidentRosterPhase';
 import { ResourcesPhase } from './components/phases/ResourcesPhase';
 import { SafetyAnalysisPhase } from './components/phases/SafetyAnalysisPhase';
 import { LogPhase } from './components/phases/LogPhase';
+import { ICSFormsPhase } from './components/phases/ICSFormsPhase';
+import { AlertsPhase } from './components/phases/AlertsPhase';
 import { GenericPhase } from './components/phases/GenericPhase';
 import { Button } from './components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './components/ui/card';
@@ -20,7 +22,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 // Removed unused Popover imports after eliminating orange dot overlays
 import { Input } from './components/ui/input';
 import { DisasterPhase, OperationalPeriod, OPERATIONAL_PERIOD_PHASES } from './types/disaster';
-import { RefreshCw, Clock, CheckCircle, Menu, HelpCircle, Search, FileText, Download, Map, ChevronUp, ChevronDown, MoreHorizontal, Send, X, Bot, User, AlertTriangle, Users, MapPin, Calendar, Box, ChevronLeft, ChevronRight, Layers } from 'lucide-react';
+import { RefreshCw, Clock, CheckCircle, Menu, HelpCircle, Search, FileText, Download, Map, ChevronUp, ChevronDown, MoreHorizontal, Send, X, Bot, User, AlertTriangle, Users, MapPin, Calendar, Box, ChevronLeft, ChevronRight, Layers, Edit2 } from 'lucide-react';
 import svgPaths from './imports/svg-4ab4ujrm1u';
 import escalateSvgPaths from './imports/svg-nzhx42a463';
 import exportSvgPaths from './imports/svg-o6fjxj41li';
@@ -109,6 +111,7 @@ export default function App() {
   const [operationalPeriodEndTime, setOperationalPeriodEndTime] = useState<string>('');
   const [operationalPeriodTimezone, setOperationalPeriodTimezone] = useState<string>('UTC');
   const [awaitingInfraOverlay, setAwaitingInfraOverlay] = useState(false);
+  const [profileModalOpen, setProfileModalOpen] = useState(false);
   // Removed: auto-swap map behavior after Tesoro prompt
 
 
@@ -290,7 +293,7 @@ export default function App() {
   const displayedPhase = displayedPeriod.phases.find(p => p.id === currentPhaseId);
   const displayedPhaseIndex = displayedPeriod.phases.findIndex(p => p.id === currentPhaseId);
 
-  const renderCurrentPhase = (hideRecommendActions = false, addActionButtonText?: string) => {
+  const renderCurrentPhase = (hideRecommendActions = false, addActionButtonText?: string, isMapView = false) => {
     if (!displayedPhase) return null;
 
     // If viewing a past period, make it read-only
@@ -305,7 +308,7 @@ export default function App() {
 
     switch (displayedPhase.id) {
       case 'overview':
-        return <OverviewPhase {...commonProps} />;
+        return <OverviewPhase {...commonProps} isMapView={isMapView} />;
       case 'objectives-actions':
         return <ObjectivesActionsPhase {...commonProps} onRecommendActions={() => setShowActionPoints(true)} hideRecommendActions={hideRecommendActions} addActionButtonText={addActionButtonText} />;
       case 'incident-roster':
@@ -317,7 +320,9 @@ export default function App() {
       case 'log':
         return <LogPhase {...commonProps} />;
       case 'ics-forms':
-        return <div className="w-full h-full bg-black" />;
+        return <ICSFormsPhase {...commonProps} />;
+      case 'alerts':
+        return <AlertsPhase {...commonProps} />;
       default:
         return (
           <GenericPhase 
@@ -502,10 +507,13 @@ export default function App() {
             {/* Planning Stepper */}
             <div className="border-b border-border flex-shrink-0">
               <PlanningPStepper
-                phases={displayedPeriod.phases}
+                phases={showFullscreenMap ? displayedPeriod.phases.filter(phase => phase.id !== 'log') : displayedPeriod.phases}
                 currentPhaseId={currentPhaseId}
                 onPhaseSelect={setCurrentPhaseId}
                 operationalPeriodNumber={displayedPeriod.number}
+                nameOverrides={{
+                  'overview': 'Reports'
+                }}
               />
             </div>
             
@@ -654,6 +662,125 @@ export default function App() {
           </DialogHeader>
           <div className="mt-4">
             <COPContent />
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* My Incident Profile Modal */}
+      <Dialog open={profileModalOpen} onOpenChange={setProfileModalOpen}>
+        <DialogContent className="max-h-[90vh] overflow-auto" style={{ maxWidth: '840px' }}>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <User className="w-5 h-5 text-accent" />
+              My Incident Alpha Profile
+            </DialogTitle>
+          </DialogHeader>
+          <div className="mt-6 space-y-6">
+            {/* Position Section */}
+            <div className="space-y-2">
+              <Label className="text-sm font-semibold text-foreground">Position</Label>
+              <div className="p-3 bg-muted/20 rounded-lg border border-border/50">
+                <p className="text-sm text-foreground">SITL (Situation Unit Leader)</p>
+              </div>
+            </div>
+
+            {/* Activation Status Section */}
+            <div className="space-y-2">
+              <Label className="text-sm font-semibold text-foreground">Activation Status</Label>
+              <div className="p-3 bg-muted/20 rounded-lg border border-border/50">
+                <div className="flex items-center justify-between">
+                  <p className="text-xs text-white">Activated: Jun 11, 2026, 14:00 HST</p>
+                  <Badge variant="default" className="bg-green-600">Active</Badge>
+                </div>
+              </div>
+            </div>
+
+            {/* Check-In and Sign-In Status Section - Side by Side */}
+            <div className="grid grid-cols-2 gap-4">
+              {/* Check-In Status */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <Label className="text-sm font-semibold text-foreground">Check-In Status</Label>
+                  <button
+                    onClick={() => {}}
+                    className="p-1 hover:bg-muted/30 rounded transition-colors"
+                  >
+                    <Edit2 className="w-3 h-3 text-white" />
+                  </button>
+                </div>
+                <div className="p-3 bg-muted/20 rounded-lg border border-border/50">
+                  <div className="flex items-center justify-between">
+                    <p className="text-xs text-white">Last check-in: Jun 11, 2026, 14:05 HST</p>
+                    <Badge variant="default" className="bg-green-600">Checked-In</Badge>
+                  </div>
+                </div>
+              </div>
+
+              {/* Sign-In Status */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <Label className="text-sm font-semibold text-foreground">Sign-In Status</Label>
+                  <button
+                    onClick={() => {}}
+                    className="p-1 hover:bg-muted/30 rounded transition-colors"
+                  >
+                    <Edit2 className="w-3 h-3 text-white" />
+                  </button>
+                </div>
+                <div className="p-3 bg-muted/20 rounded-lg border border-border/50">
+                  <div className="flex items-center justify-between">
+                    <p className="text-xs text-white">Signed in: Jun 11, 2026, 14:00 HST</p>
+                    <Badge variant="default" className="bg-green-600">Signed-In</Badge>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Activity Log Section */}
+            <div className="space-y-2">
+              <Label className="text-sm font-semibold text-foreground">Activity Log</Label>
+              <div className="p-3 bg-muted/20 rounded-lg border border-border/50 space-y-3 max-h-64 overflow-y-auto">
+                <div className="flex gap-3">
+                  <div className="flex flex-col items-center">
+                    <div className="w-2 h-2 rounded-full bg-green-600"></div>
+                    <div className="w-px h-full bg-border"></div>
+                  </div>
+                  <div className="flex-1 pb-3">
+                    <p className="text-sm font-medium text-foreground">Checked-In to Incident</p>
+                    <p className="text-xs text-white">Jun 11, 2026, 14:05 HST</p>
+                  </div>
+                </div>
+                <div className="flex gap-3">
+                  <div className="flex flex-col items-center">
+                    <div className="w-2 h-2 rounded-full bg-green-600"></div>
+                    <div className="w-px h-full bg-border"></div>
+                  </div>
+                  <div className="flex-1 pb-3">
+                    <p className="text-sm font-medium text-foreground">Signed ICS-211 Form</p>
+                    <p className="text-xs text-white">Jun 11, 2026, 14:00 HST</p>
+                  </div>
+                </div>
+                <div className="flex gap-3">
+                  <div className="flex flex-col items-center">
+                    <div className="w-2 h-2 rounded-full bg-blue-600"></div>
+                    <div className="w-px h-full bg-border"></div>
+                  </div>
+                  <div className="flex-1 pb-3">
+                    <p className="text-sm font-medium text-foreground">Position Assigned: SITL</p>
+                    <p className="text-xs text-white">Jun 11, 2026, 14:00 HST</p>
+                  </div>
+                </div>
+                <div className="flex gap-3">
+                  <div className="flex flex-col items-center">
+                    <div className="w-2 h-2 rounded-full bg-blue-600"></div>
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-foreground">Activated for Incident Alpha</p>
+                    <p className="text-xs text-white">Jun 11, 2026, 14:00 HST</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </DialogContent>
       </Dialog>
@@ -832,22 +959,21 @@ export default function App() {
             </div>
           )}
           <div className="absolute top-4 right-4 z-[100] flex items-center gap-3">
-            {/* Incident Info Badges - Darker purple background in map view */}
-            <div className="inline-flex items-center justify-center px-4 py-2 rounded-md backdrop-blur-sm" style={{ backgroundColor: 'rgba(50, 30, 80, 0.9)', border: '1px solid rgba(167, 139, 250, 0.4)' }}>
+            {/* Incident Info Badges - Darker purple background in map view with glow */}
+            <div className="inline-flex items-center justify-center px-4 py-2 rounded-md backdrop-blur-sm" style={{ backgroundColor: 'rgba(50, 30, 80, 0.9)', border: '1px solid rgba(167, 139, 250, 0.4)', boxShadow: '0 0 10px rgba(167, 139, 250, 0.5), 0 0 20px rgba(167, 139, 250, 0.3)' }}>
               <span className="text-sm font-medium text-white">Incident Alpha</span>
             </div>
-            <div className="inline-flex items-center justify-center px-4 py-2 rounded-md backdrop-blur-sm" style={{ backgroundColor: 'rgba(50, 30, 80, 0.9)', border: '1px solid rgba(167, 139, 250, 0.4)' }}>
-              <span className="text-sm font-medium text-white">
-                Start Time: {incidentData.startTime.toLocaleString('en-US', { 
-                  month: 'short', 
-                  day: 'numeric', 
-                  year: 'numeric',
-                  hour: '2-digit',
-                  minute: '2-digit',
-                  hour12: false,
-                  timeZone: 'UTC'
-                })} UTC
-              </span>
+            <div className="inline-flex items-center justify-center px-4 py-2 rounded-md backdrop-blur-sm" style={{ backgroundColor: 'rgba(50, 30, 80, 0.9)', border: '1px solid rgba(167, 139, 250, 0.4)', boxShadow: '0 0 10px rgba(167, 139, 250, 0.5), 0 0 20px rgba(167, 139, 250, 0.3)' }}>
+              <span className="text-sm font-medium text-white">Jun 11, 2026, 21:00 EST</span>
+            </div>
+            <div className="inline-flex items-center justify-center px-4 py-2 rounded-md backdrop-blur-sm" style={{ backgroundColor: 'rgba(50, 30, 80, 0.9)', border: '1px solid rgba(167, 139, 250, 0.4)', boxShadow: '0 0 10px rgba(167, 139, 250, 0.5), 0 0 20px rgba(167, 139, 250, 0.3)' }}>
+              <span className="text-sm font-medium text-white">My Position: SITL</span>
+            </div>
+            <div className="flex items-center gap-2 rounded-full cursor-pointer" style={{ backgroundColor: 'rgba(22, 101, 52, 0.9)', border: '1px solid white', boxShadow: '0 0 10px rgba(34, 197, 94, 0.6)', fontSize: '13.5px', lineHeight: '1', paddingLeft: '13.5px', paddingRight: '13.5px', paddingTop: '4.5px', paddingBottom: '4.5px' }} onClick={() => setProfileModalOpen(true)}>
+              <span className="font-semibold text-white" style={{ fontSize: '13.5px' }}>Checked-In</span>
+              <span className="font-semibold text-white" style={{ fontSize: '13.5px' }}>•</span>
+              <span className="font-semibold text-white" style={{ fontSize: '13.5px' }}>Signed-In</span>
+              <Edit2 className="text-white" style={{ width: '12px', height: '12px' }} />
             </div>
             {/* Exit Map Button */}
             <Button
@@ -893,11 +1019,11 @@ export default function App() {
                     <div className="border-b border-border flex-shrink-0">
                       <div className="flex items-center justify-between overflow-hidden">
                         <div className="flex-1 min-w-0 overflow-hidden">
-                          <PlanningPStepper
-                            phases={displayedPeriod.phases.filter(p => p.id !== 'resources')}
-                            currentPhaseId={currentPhaseId}
-                            onPhaseSelect={setCurrentPhaseId}
-                            operationalPeriodNumber={displayedPeriod.number}
+                        <PlanningPStepper
+                            phases={displayedPeriod.phases.filter(p => p.id !== 'ics-forms' && p.id !== 'log')}
+                          currentPhaseId={currentPhaseId}
+                          onPhaseSelect={setCurrentPhaseId}
+                          operationalPeriodNumber={displayedPeriod.number}
                             nameOverrides={{
                               'overview': 'Reports',
                               'incident-roster': 'Roster',
@@ -920,7 +1046,7 @@ export default function App() {
               {/* Planning content - fills remaining space above fixed chat */}
               <div className="flex-1 min-h-0 overflow-hidden">
                 <div className="h-full overflow-y-auto p-6">
-                  {renderCurrentPhase(true, 'Add Child Action')}
+                  {renderCurrentPhase(true, 'Add Child Action', true)}
                 </div>
               </div>
                {/* Bottom area of left panel: PRATUS AI toggle and chat */}
@@ -1068,7 +1194,7 @@ export default function App() {
                     <div className="border-b border-border flex-shrink-0">
                       <div className="flex items-center justify-between">
                         <PlanningPStepper
-                          phases={displayedPeriod.phases}
+                          phases={displayedPeriod.phases.filter(p => p.id !== 'log')}
                           currentPhaseId={currentPhaseId}
                           onPhaseSelect={setCurrentPhaseId}
                           operationalPeriodNumber={displayedPeriod.number}

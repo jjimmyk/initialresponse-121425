@@ -32,6 +32,12 @@ export const PLANNING_P_PHASES: Omit<DisasterPhase, 'completed' | 'data'>[] = [
 
 export const OPERATIONAL_PERIOD_PHASES: Omit<DisasterPhase, 'completed' | 'data'>[] = [
   {
+    id: 'alerts',
+    name: 'Notifications',
+    shortName: 'Notifications',
+    description: 'Incident alerts and notifications'
+  },
+  {
     id: 'overview',
     name: 'Overview',
     shortName: 'Overview',
@@ -69,8 +75,8 @@ export const OPERATIONAL_PERIOD_PHASES: Omit<DisasterPhase, 'completed' | 'data'
   },
   {
     id: 'ics-forms',
-    name: 'ICS Forms',
-    shortName: 'ICS Forms',
+    name: 'ICS',
+    shortName: 'ICS',
     description: 'ICS Forms'
   }
 ];

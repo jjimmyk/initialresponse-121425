@@ -42,20 +42,17 @@ interface AvailablePerson {
   phone?: string;
 }
 
-// Mock available personnel database (INDOPACOM/Oahu power context)
+// Mock available personnel database (Oil spill response context)
 const AVAILABLE_PERSONNEL: AvailablePerson[] = [
-  { id: 'p1', name: 'Col. Hana Kealoha (INDOPACOM J3/J35 Ops)', email: 'hana.kealoha@pacom.mil', phone: '(808) 472-1001' },
-  { id: 'p2', name: 'Maj. Eric Tan (USMC MCBH Facilities)', email: 'eric.tan@usmc.mil', phone: '(808) 257-1002' },
-  { id: 'p3', name: 'Kai Nakamura (Utility Grid Operations Liaison)', email: 'kai.nakamura@utility.hi', phone: '(808) 543-1003' },
-  { id: 'p4', name: 'Ava Ikaika (State Energy Office Liaison)', email: 'ava.ikaika@hawaii.gov', phone: '(808) 587-1004' },
-  { id: 'p5', name: 'Noa Silva (Honolulu Board of Water Supply Ops)', email: 'noa.silva@hbws.hi.us', phone: '(808) 748-1005' },
-  { id: 'p6', name: 'Dr. Leilani Park (Hospital Coalition Coordinator)', email: 'leilani.park@hihealth.org', phone: '(808) 531-1006' },
-  { id: 'p7', name: 'Malia Young (Telecom ESF‑2 Lead)', email: 'malia.young@telecom.hi', phone: '(808) 533-1007' },
-  { id: 'p8', name: 'Lt. Cmdr. Jonah Reyes (Navy Region Hawaii Liaison)', email: 'jonah.reyes@navy.mil', phone: '(808) 473-1008' },
-  { id: 'p9', name: 'Ken Ito (OT/ICS Security Lead)', email: 'ken.ito@utility.hi', phone: '(808) 543-1009' },
-  { id: 'p10', name: 'Megan Lau (Public Affairs – JIC)', email: 'megan.lau@hawaii.gov', phone: '(808) 586-1010' },
-  { id: 'p11', name: 'Daniel Kim (Legal & Privacy Counsel)', email: 'daniel.kim@ag.hi.gov', phone: '(808) 586-1011' },
-  { id: 'p12', name: 'Sgt. Kalani Ho (Logistics – Fuel & Gensets)', email: 'kalani.ho@hi.ng.mil', phone: '(808) 672-1012' },
+  { id: 'p2', name: 'John Kealoha (EPA On-Scene Coordinator)', email: 'john.kealoha@epa.gov', phone: '(808) 541-2711' },
+  { id: 'p3', name: 'Dr. Kai Nakamura (NOAA Scientific Support Coordinator)', email: 'kai.nakamura@noaa.gov', phone: '(808) 725-5000' },
+  { id: 'p4', name: 'Leilani Ikaika (State ESF-10 Oil Spill Coordinator)', email: 'leilani.ikaika@hawaii.gov', phone: '(808) 587-2650' },
+  { id: 'p5', name: 'Mark Silva (OSRO Operations Manager)', email: 'mark.silva@osro-contractor.com', phone: '(808) 544-5200' },
+  { id: 'p8', name: 'Lt. Jonah Reyes (Navy Environmental Liaison)', email: 'jonah.reyes@navy.mil', phone: '(808) 473-2390' },
+  { id: 'p9', name: 'Malia Ito (Hawaii DOH Environmental Health)', email: 'malia.ito@doh.hawaii.gov', phone: '(808) 586-4424' },
+  { id: 'p10', name: 'Ken Lau (JIC Public Information Officer)', email: 'ken.lau@uscg.mil', phone: '(808) 842-2612' },
+  { id: 'p11', name: 'Sarah Kim (Responsible Party Legal Counsel)', email: 'sarah.kim@maritime-legal.com', phone: '(808) 529-3900' },
+  { id: 'p12', name: 'Daniel Ho (Logistics Section – Equipment Staging)', email: 'daniel.ho@uscg.mil', phone: '(808) 842-2625' },
 ];
 
 export function IncidentRosterPhase({ data, onDataChange, onComplete, onPrevious, isMapExpanded = true }: IncidentRosterPhaseProps) {
@@ -82,43 +79,34 @@ export function IncidentRosterPhase({ data, onDataChange, onComplete, onPrevious
     actions: 'w-[120px]'
   };
 
-  // Initialize roster data aligned with INDOPACOM Oahu power SITREP
+  // Initialize roster data aligned with oil spill unified command
   const roster: RosterPosition[] = data.roster || [
-    { id: 'pacom-ops', title: 'INDOPACOM Operations (J3/J35)', assignedMembers: [
-      { id: 'm1', name: 'Col. Hana Kealoha (INDOPACOM J3/J35 Ops)', email: 'hana.kealoha@pacom.mil', phone: '(808) 472-1001', checkedIn: true, checkInTime: new Date().toLocaleString(), signedIn: true, signInTime: new Date().toLocaleString(), activationStatus: 'Activated' }
+    { id: 'state-osc', title: 'State On-Scene Coordinator (ESF-10)', assignedMembers: [
+      { id: 'm2', name: 'Leilani Ikaika (State ESF-10 Oil Spill Coordinator)', email: 'leilani.ikaika@hawaii.gov', phone: '(808) 587-2650', checkedIn: true, checkInTime: new Date().toLocaleString(), signedIn: true, signInTime: new Date().toLocaleString(), activationStatus: 'Activated' }
     ] },
-    { id: 'mcbh-fac', title: 'USMC – MCBH Facilities/Electrical', assignedMembers: [
-      { id: 'm2', name: 'Maj. Eric Tan (USMC MCBH Facilities)', email: 'eric.tan@usmc.mil', phone: '(808) 257-1002', checkedIn: true, signedIn: true, activationStatus: 'Activated' }
+    { id: 'noaa-ssc', title: 'NOAA Scientific Support Coordinator', assignedMembers: [
+      { id: 'm3', name: 'Dr. Kai Nakamura (NOAA SSC)', email: 'kai.nakamura@noaa.gov', phone: '(808) 725-5000', checkedIn: true, signedIn: true, activationStatus: 'Activated' }
     ] },
-    { id: 'utility-grid', title: 'Utility Grid Operations Liaison', assignedMembers: [
-      { id: 'm3', name: 'Kai Nakamura (Utility Grid Operations Liaison)', email: 'kai.nakamura@utility.hi', phone: '(808) 543-1003', checkedIn: true, signedIn: true, activationStatus: 'Activated' }
+    { id: 'epa-osc', title: 'EPA On-Scene Coordinator', assignedMembers: [
+      { id: 'm4', name: 'John Kealoha (EPA OSC)', email: 'john.kealoha@epa.gov', phone: '(808) 541-2711', checkedIn: true, signedIn: true, activationStatus: 'Activated' }
     ] },
-    { id: 'state-energy', title: 'Hawaii State Energy Office Liaison', assignedMembers: [
-      { id: 'm4', name: 'Ava Ikaika (State Energy Office Liaison)', email: 'ava.ikaika@hawaii.gov', phone: '(808) 587-1004', checkedIn: true, signedIn: true, activationStatus: 'Activated' }
+    { id: 'osro-ops', title: 'OSRO Operations Manager', assignedMembers: [
+      { id: 'm5', name: 'Mark Silva (OSRO Operations Manager)', email: 'mark.silva@osro-contractor.com', phone: '(808) 544-5200', checkedIn: true, signedIn: true, activationStatus: 'Activated' }
     ] },
-    { id: 'water', title: 'Honolulu Board of Water Supply Ops', assignedMembers: [
-      { id: 'm5', name: 'Noa Silva (HBWS Ops Chief)', email: 'noa.silva@hbws.hi.us', phone: '(808) 748-1005', checkedIn: true, signedIn: true, activationStatus: 'Activated' }
+    { id: 'navy-env', title: 'Navy Environmental Affairs Liaison', assignedMembers: [
+      { id: 'm8', name: 'Lt. Jonah Reyes (Navy Environmental Liaison)', email: 'jonah.reyes@navy.mil', phone: '(808) 473-2390', checkedIn: true, signedIn: true, activationStatus: 'Activated' }
     ] },
-    { id: 'health', title: 'Hospital Coalition Coordinator', assignedMembers: [
-      { id: 'm6', name: 'Dr. Leilani Park (Hospital Coalition)', email: 'leilani.park@hihealth.org', phone: '(808) 531-1006', checkedIn: true, signedIn: true, activationStatus: 'Activated' }
+    { id: 'doh-health', title: 'Hawaii DOH Environmental Health', assignedMembers: [
+      { id: 'm9', name: 'Malia Ito (DOH Environmental Health)', email: 'malia.ito@doh.hawaii.gov', phone: '(808) 586-4424', checkedIn: true, signedIn: true, activationStatus: 'Activated' }
     ] },
-    { id: 'telecom', title: 'Telecom ESF‑2 Lead', assignedMembers: [
-      { id: 'm7', name: 'Malia Young (Telecom ESF‑2 Lead)', email: 'malia.young@telecom.hi', phone: '(808) 533-1007', checkedIn: true, signedIn: false, activationStatus: 'Awaiting Confirmation' }
+    { id: 'jic-pio', title: 'Public Information Officer (JIC)', assignedMembers: [
+      { id: 'm10', name: 'Ken Lau (JIC Public Information Officer)', email: 'ken.lau@uscg.mil', phone: '(808) 842-2612', checkedIn: true, signedIn: true, activationStatus: 'Activated' }
     ] },
-    { id: 'navy-liaison', title: 'Navy Region Hawaii Liaison', assignedMembers: [
-      { id: 'm8', name: 'Lt. Cmdr. Jonah Reyes (Navy Region Hawaii)', email: 'jonah.reyes@navy.mil', phone: '(808) 473-1008', checkedIn: true, signedIn: true, activationStatus: 'Activated' }
+    { id: 'rp-legal', title: 'Responsible Party Legal Counsel', assignedMembers: [
+      { id: 'm11', name: 'Sarah Kim (RP Legal Counsel)', email: 'sarah.kim@maritime-legal.com', phone: '(808) 529-3900', checkedIn: true, signedIn: true, activationStatus: 'Activated' }
     ] },
-    { id: 'ot-ics', title: 'OT/ICS Security Lead (Utility)', assignedMembers: [
-      { id: 'm9', name: 'Ken Ito (OT/ICS Security Lead)', email: 'ken.ito@utility.hi', phone: '(808) 543-1009', checkedIn: true, signedIn: true, activationStatus: 'Activated' }
-    ] },
-    { id: 'public-affairs', title: 'Public Information Officer (JIC)', assignedMembers: [
-      { id: 'm10', name: 'Megan Lau (Public Affairs – JIC)', email: 'megan.lau@hawaii.gov', phone: '(808) 586-1010', checkedIn: true, signedIn: true, activationStatus: 'Activated' }
-    ] },
-    { id: 'legal-privacy', title: 'Legal & Privacy Counsel', assignedMembers: [
-      { id: 'm11', name: 'Daniel Kim (Legal & Privacy Counsel)', email: 'daniel.kim@ag.hi.gov', phone: '(808) 586-1011', checkedIn: true, signedIn: true, activationStatus: 'Activated' }
-    ] },
-    { id: 'logistics', title: 'Logistics – Fuel & Gensets', assignedMembers: [
-      { id: 'm12', name: 'Sgt. Kalani Ho (HI NG Logistics)', email: 'kalani.ho@hi.ng.mil', phone: '(808) 672-1012', checkedIn: true, signedIn: true, activationStatus: 'Activated' }
+    { id: 'logistics-staging', title: 'Logistics – Equipment Staging', assignedMembers: [
+      { id: 'm12', name: 'Daniel Ho (Logistics Section)', email: 'daniel.ho@uscg.mil', phone: '(808) 842-2625', checkedIn: true, signedIn: true, activationStatus: 'Activated' }
     ] },
   ];
 
@@ -465,8 +453,8 @@ export function IncidentRosterPhase({ data, onDataChange, onComplete, onPrevious
 
       {/* Roster Members List (mirrors Resources list) - Only show in List view */}
       {viewMode === 'list' && (
-        <div className="space-y-4">
-          {filteredMembers.map(({ member, position }) => {
+      <div className="space-y-4">
+        {filteredMembers.map(({ member, position }) => {
           const compositeId = `${position.id}:${member.id}`;
           const isExpanded = expandedMembers.has(compositeId);
           return (
@@ -585,19 +573,19 @@ export function IncidentRosterPhase({ data, onDataChange, onComplete, onPrevious
             </div>
           );
         })}
-        </div>
+              </div>
       )}
 
       {/* Footer count (mirrors Resources) - Only show in List view */}
       {viewMode === 'list' && (
-        <div className="bg-[#222529] h-[49px] relative w-full">
-          <div aria-hidden="true" className="absolute border-[#6e757c] border-[1px_0px_0px] border-solid inset-0 pointer-events-none" />
-          <div className="flex items-center h-[49px] px-6">
-            <p className="font-['Open_Sans',_sans-serif] font-normal leading-[18px] text-[#6e757c] text-[12px]" style={{ fontVariationSettings: "'wdth' 100" }}>
-              {filteredMembers.length} {filteredMembers.length === 1 ? 'member' : 'members'}
-            </p>
-          </div>
-        </div>
+      <div className="bg-[#222529] h-[49px] relative w-full">
+        <div aria-hidden="true" className="absolute border-[#6e757c] border-[1px_0px_0px] border-solid inset-0 pointer-events-none" />
+        <div className="flex items-center h-[49px] px-6">
+          <p className="font-['Open_Sans',_sans-serif] font-normal leading-[18px] text-[#6e757c] text-[12px]" style={{ fontVariationSettings: "'wdth' 100" }}>
+            {filteredMembers.length} {filteredMembers.length === 1 ? 'member' : 'members'}
+          </p>
+                              </div>
+                            </div>
       )}
 
       {/* Add/Edit Member Side Panel */}

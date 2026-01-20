@@ -16,6 +16,7 @@ type DataLayersProps = {
 };
 
 export function DataLayers({ className, style, orientation = 'vertical', onHandlePointerDown, onCollapse }: DataLayersProps) {
+  const [incidentAlphaExpanded, setIncidentAlphaExpanded] = React.useState(false);
   const [weatherExpanded, setWeatherExpanded] = React.useState(false);
   const [resourcesExpanded, setResourcesExpanded] = React.useState(false);
   const [tacticsExpanded, setTacticsExpanded] = React.useState(false);
@@ -24,6 +25,7 @@ export function DataLayers({ className, style, orientation = 'vertical', onHandl
   const [vesselsExpanded, setVesselsExpanded] = React.useState(false);
   const [searchTerm, setSearchTerm] = React.useState('');
   const [layerToggles, setLayerToggles] = React.useState({
+    incidentAlpha: {},
     weather: { radar: true, warnings: true },
     resources: { staging: true, facilities: true },
     tactics: { booms: true, skimmers: false },
@@ -207,6 +209,35 @@ export function DataLayers({ className, style, orientation = 'vertical', onHandl
         </div>
       </CardHeader>
       <CardContent className="space-y-4 flex-1 min-h-0 overflow-y-auto pr-2">
+        {/* Incident Alpha Layers */}
+        <div
+          className="border border-border rounded-lg overflow-hidden"
+          style={{
+            background:
+              'linear-gradient(90deg, rgba(2, 163, 254, 0.08) 0%, rgba(0, 0, 0, 0) 100%), linear-gradient(90deg, rgb(20, 23, 26) 0%, rgb(20, 23, 26) 100%)',
+            ...(orientation === 'horizontal' ? { minWidth: '320px' } : {})
+          }}
+        >
+          <div className={`p-3 ${incidentAlphaExpanded ? 'border-b border-border' : ''}`}>
+            <div
+              className="flex items-start gap-2 flex-1 cursor-pointer"
+              onClick={() => setIncidentAlphaExpanded((v) => !v)}
+            >
+              {incidentAlphaExpanded ? (
+                <ChevronDown className="w-4 h-4 text-white flex-shrink-0 mt-0.5" />
+              ) : (
+                <ChevronRight className="w-4 h-4 text-white flex-shrink-0 mt-0.5" />
+              )}
+              <Label>Incident Alpha Layers</Label>
+            </div>
+          </div>
+          {incidentAlphaExpanded && (
+            <div className="p-3 space-y-2">
+              {/* Layers will be added here */}
+            </div>
+          )}
+        </div>
+
         {/* Weather */}
         <div
           className="border border-border rounded-lg overflow-hidden"
@@ -217,21 +248,16 @@ export function DataLayers({ className, style, orientation = 'vertical', onHandl
           }}
         >
           <div className={`p-3 ${weatherExpanded ? 'border-b border-border' : ''}`}>
-            <div className="flex items-start justify-between">
-              <div
-                className="flex items-start gap-2 flex-1 cursor-pointer"
-                onClick={() => setWeatherExpanded((v) => !v)}
-              >
-                {weatherExpanded ? (
-                  <ChevronDown className="w-4 h-4 text-white flex-shrink-0 mt-0.5" />
-                ) : (
-                  <ChevronRight className="w-4 h-4 text-white flex-shrink-0 mt-0.5" />
-                )}
-                <Label>Weather</Label>
-              </div>
-              <div className="flex items-center gap-3">
-                <Button type="button" variant="outline" size="sm" className="h-5 px-1 py-0 text-[10px]" style={{ paddingLeft: '0.275rem', paddingRight: '0.275rem' }}>+ Add Layer</Button>
-              </div>
+            <div
+              className="flex items-start gap-2 flex-1 cursor-pointer"
+              onClick={() => setWeatherExpanded((v) => !v)}
+            >
+              {weatherExpanded ? (
+                <ChevronDown className="w-4 h-4 text-white flex-shrink-0 mt-0.5" />
+              ) : (
+                <ChevronRight className="w-4 h-4 text-white flex-shrink-0 mt-0.5" />
+              )}
+              <Label>Weather</Label>
             </div>
           </div>
           {weatherExpanded && (
@@ -304,21 +330,16 @@ export function DataLayers({ className, style, orientation = 'vertical', onHandl
           }}
         >
           <div className={`p-3 ${resourcesExpanded ? 'border-b border-border' : ''}`}>
-            <div className="flex items-start justify-between">
-              <div
-                className="flex items-start gap-2 flex-1 cursor-pointer"
-                onClick={() => setResourcesExpanded((v) => !v)}
-              >
-                {resourcesExpanded ? (
-                  <ChevronDown className="w-4 h-4 text-white flex-shrink-0 mt-0.5" />
-                ) : (
-                  <ChevronRight className="w-4 h-4 text-white flex-shrink-0 mt-0.5" />
-                )}
-                <Label>Resources</Label>
-              </div>
-              <div className="flex items-center gap-3">
-                <Button type="button" variant="outline" size="sm" className="h-5 px-1 py-0 text-[10px]" style={{ paddingLeft: '0.275rem', paddingRight: '0.275rem' }}>+ Add Layer</Button>
-              </div>
+            <div
+              className="flex items-start gap-2 flex-1 cursor-pointer"
+              onClick={() => setResourcesExpanded((v) => !v)}
+            >
+              {resourcesExpanded ? (
+                <ChevronDown className="w-4 h-4 text-white flex-shrink-0 mt-0.5" />
+              ) : (
+                <ChevronRight className="w-4 h-4 text-white flex-shrink-0 mt-0.5" />
+              )}
+              <Label>Resources</Label>
             </div>
           </div>
           {resourcesExpanded && (
@@ -391,21 +412,16 @@ export function DataLayers({ className, style, orientation = 'vertical', onHandl
           }}
         >
           <div className={`p-3 ${tacticsExpanded ? 'border-b border-border' : ''}`}>
-            <div className="flex items-start justify-between">
-              <div
-                className="flex items-start gap-2 flex-1 cursor-pointer"
-                onClick={() => setTacticsExpanded((v) => !v)}
-              >
-                {tacticsExpanded ? (
-                  <ChevronDown className="w-4 h-4 text-white flex-shrink-0 mt-0.5" />
-                ) : (
-                  <ChevronRight className="w-4 h-4 text-white flex-shrink-0 mt-0.5" />
-                )}
-                <Label>Tactics</Label>
-              </div>
-              <div className="flex items-center gap-3">
-                <Button type="button" variant="outline" size="sm" className="h-5 px-1 py-0 text-[10px]" style={{ paddingLeft: '0.275rem', paddingRight: '0.275rem' }}>+ Add Layer</Button>
-              </div>
+            <div
+              className="flex items-start gap-2 flex-1 cursor-pointer"
+              onClick={() => setTacticsExpanded((v) => !v)}
+            >
+              {tacticsExpanded ? (
+                <ChevronDown className="w-4 h-4 text-white flex-shrink-0 mt-0.5" />
+              ) : (
+                <ChevronRight className="w-4 h-4 text-white flex-shrink-0 mt-0.5" />
+              )}
+              <Label>Tactics</Label>
             </div>
           </div>
           {tacticsExpanded && (
@@ -494,21 +510,16 @@ export function DataLayers({ className, style, orientation = 'vertical', onHandl
           }}
         >
           <div className={`p-3 ${actionsExpanded ? 'border-b border-border' : ''}`}>
-            <div className="flex items-start justify-between">
-              <div
-                className="flex items-start gap-2 flex-1 cursor-pointer"
-                onClick={() => setActionsExpanded((v) => !v)}
-              >
-                {actionsExpanded ? (
-                  <ChevronDown className="w-4 h-4 text-white flex-shrink-0 mt-0.5" />
-                ) : (
-                  <ChevronRight className="w-4 h-4 text-white flex-shrink-0 mt-0.5" />
-                )}
-                <Label>Actions</Label>
-              </div>
-              <div className="flex items-center gap-3">
-                <Button type="button" variant="outline" size="sm" className="h-5 px-1 py-0 text-[10px]" style={{ paddingLeft: '0.275rem', paddingRight: '0.275rem' }}>+ Add Layer</Button>
-              </div>
+            <div
+              className="flex items-start gap-2 flex-1 cursor-pointer"
+              onClick={() => setActionsExpanded((v) => !v)}
+            >
+              {actionsExpanded ? (
+                <ChevronDown className="w-4 h-4 text-white flex-shrink-0 mt-0.5" />
+              ) : (
+                <ChevronRight className="w-4 h-4 text-white flex-shrink-0 mt-0.5" />
+              )}
+              <Label>Actions</Label>
             </div>
           </div>
           {actionsExpanded && (
@@ -581,21 +592,16 @@ export function DataLayers({ className, style, orientation = 'vertical', onHandl
           }}
         >
           <div className={`p-3 ${grsExpanded ? 'border-b border-border' : ''}`}>
-            <div className="flex items-start justify-between">
-              <div
-                className="flex items-start gap-2 flex-1 cursor-pointer"
-                onClick={() => setGrsExpanded((v) => !v)}
-              >
-                {grsExpanded ? (
-                  <ChevronDown className="w-4 h-4 text-white flex-shrink-0 mt-0.5" />
-                ) : (
-                  <ChevronRight className="w-4 h-4 text-white flex-shrink-0 mt-0.5" />
-                )}
-                <Label>Geographic Response Strategies</Label>
-              </div>
-              <div className="flex items-center gap-3">
-                <Button type="button" variant="outline" size="sm" className="h-5 px-1 py-0 text-[10px]" style={{ paddingLeft: '0.275rem', paddingRight: '0.275rem' }}>+ Add Layer</Button>
-              </div>
+            <div
+              className="flex items-start gap-2 flex-1 cursor-pointer"
+              onClick={() => setGrsExpanded((v) => !v)}
+            >
+              {grsExpanded ? (
+                <ChevronDown className="w-4 h-4 text-white flex-shrink-0 mt-0.5" />
+              ) : (
+                <ChevronRight className="w-4 h-4 text-white flex-shrink-0 mt-0.5" />
+              )}
+              <Label>Geographic Response Strategies</Label>
             </div>
           </div>
           {grsExpanded && (
@@ -668,21 +674,16 @@ export function DataLayers({ className, style, orientation = 'vertical', onHandl
           }}
         >
           <div className={`p-3 ${vesselsExpanded ? 'border-b border-border' : ''}`}>
-            <div className="flex items-start justify-between">
-              <div
-                className="flex items-start gap-2 flex-1 cursor-pointer"
-                onClick={() => setVesselsExpanded((v) => !v)}
-              >
-                {vesselsExpanded ? (
-                  <ChevronDown className="w-4 h-4 text-white flex-shrink-0 mt-0.5" />
-                ) : (
-                  <ChevronRight className="w-4 h-4 text-white flex-shrink-0 mt-0.5" />
-                )}
-                <Label>Vessel Tracks</Label>
-              </div>
-              <div className="flex items-center gap-3">
-                <Button type="button" variant="outline" size="sm" className="h-5 px-1 py-0 text-[10px]" style={{ paddingLeft: '0.275rem', paddingRight: '0.275rem' }}>+ Add Layer</Button>
-              </div>
+            <div
+              className="flex items-start gap-2 flex-1 cursor-pointer"
+              onClick={() => setVesselsExpanded((v) => !v)}
+            >
+              {vesselsExpanded ? (
+                <ChevronDown className="w-4 h-4 text-white flex-shrink-0 mt-0.5" />
+              ) : (
+                <ChevronRight className="w-4 h-4 text-white flex-shrink-0 mt-0.5" />
+              )}
+              <Label>Vessel Tracks</Label>
             </div>
           </div>
           {vesselsExpanded && (
